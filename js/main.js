@@ -20,7 +20,7 @@ var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 var ADVERT_NUM_MAX = 8;
 
-//генерация случайных данных
+// генерация случайных данных
 var authorAvatar = [];
 var offerTitle = [];
 var offerAddress = [];
@@ -120,7 +120,7 @@ for (var j = 0; j < ADVERT_NUM_MAX; j++) {
   advertList[j] = new Advert(newAuthor, newOffer, newLocation);
 }
 
-//создание DOM-элементов, соответствующих меткам на карте и вставка элементов в блок .map__pins
+// создание DOM-элементов, соответствующих меткам на карте и вставка элементов в блок .map__pins
 var similarListPin = document.querySelector('.map__pins');
 var similarPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
