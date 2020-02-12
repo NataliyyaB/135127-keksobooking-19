@@ -11,8 +11,6 @@ var PRICE_MAX = 8000;
 var PRICE_MIN = 3000;
 var PHOTO_NUM_MAX = 5;
 var PHOTO_NUM_MIN = 1;
-var FEATURE_NUM_MAX = 6;
-var FEATURE_NUM_MIN = 1;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 var ADVERT_NUM_MAX = 8;
@@ -91,7 +89,6 @@ var getPins = function () {
   return pins;
 };
 
-console.log(getPins());
 // создание DOM-элементов, соответствующих меткам на карте и вставка элементов в блок .map__pins
 var similarListPin = document.querySelector('.map__pins');
 var similarPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
