@@ -9,74 +9,59 @@ var GUESTS_NUM_MAX = 10;
 var GUESTS_NUM_MIN = 1;
 var PRICE_MAX = 8000;
 var PRICE_MIN = 3000;
-var PHOTO_NUM_MAX = 5;
-var PHOTO_NUM_MIN = 1;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
-var ADVERT_NUM_MAX = 8;
+
+var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
+var OFFER_CHECKINS = ['12:00', '13:00', '14:00'];
+var OFFER_CHECKOUTS = ['12:00', '13:00', '14:00'];
+var FEATURE_OPTIONS = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var OFFER_PHOTOS = [
+  'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
+];
 
 var mapСoordinates = document.querySelector('.map');
 var mapMaxX = mapСoordinates.offsetWidth - MAP_MIN_X;
+var similarListPin = document.querySelector('.map__pins');
+
 
 var getRandomRange = function (max, min) {
-  var randomRange = Math.floor(Math.random() * (max - min) + min);
-  return randomRange;
+  return Math.floor(Math.random() * (max - min) + min);
 };
 
-var getRandomArray = function (adArray) {
-  var randomArray = Math.floor(Math.random() * adArray.length);
-  return randomArray;
+var generateRandomArray = function (predefinedArray) {
+  var randomNum = getRandomRange(predefinedArray.length, 1);
+  return predefinedArray.slice(0, randomNum);
 };
 
-var AVATARS = [];
-var OFFERTITLES = [];
-var OFFERTYPES = ['palace', 'flat', 'house', 'bungalo'];
-var OFFERCHECKINS = ['12:00', '13:00', '14:00'];
-var OFFERCHECKOUTS = ['12:00', '13:00', '14:00'];
-var FEATUREOPTIONS = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var OFFERFEATURES = [];
-var OFFERDESCRIPTIONS = [];
-var OFFERPHOTOS = [];
+var getRandomArrayElement = function (predefinedArray) {
+  var randomItem = getRandomRange(predefinedArray.length, 0);
+  return predefinedArray[randomItem];
+};
 
 var getPins = function () {
   var pins = [];
+  var ADVERT_NUM_MAX = 8;
 
   for (var i = 0; i < ADVERT_NUM_MAX; i++) {
-    AVATARS[i] = 'img/avatars/user0' + (i + 1) + '.png';
-    OFFERTITLES[i] = 'title ' + (i + 1);
-    OFFERDESCRIPTIONS[i] = 'Room description ' + (i + 1);
-  }
-  // var authorRandom = getRandomArray(AVATARS);
-  // AVATARS.splice(authorRandom, 1);
-
-  for (i = 0; i < ADVERT_NUM_MAX; i++) {
-
-    var randomPhotoNum = getRandomRange(PHOTO_NUM_MAX, PHOTO_NUM_MIN);
-    for (var j = 0; j <= randomPhotoNum; j++) {
-      OFFERPHOTOS[j] = 'http://o0.github.io/assets/images/tokyo/hotel' + (j + 1) + '.jpg';
-    }
-
-    var randomFeature = getRandomArray(FEATUREOPTIONS);
-    for (j = 0; j < randomFeature; j++) {
-      OFFERFEATURES[j] = FEATUREOPTIONS[j];
-    }
-
     var pin = {
       author: {
-        avatar: AVATARS[getRandomArray(AVATARS)],
+        avatar: 'img/avatars/user0' + (i + 1) + '.png',
       },
       offer: {
-        title: OFFERTITLES[getRandomArray(OFFERTITLES)],
+        title: 'title ' + (i + 1),
         address: '',
         price: getRandomRange(PRICE_MAX, PRICE_MIN),
-        type: OFFERTYPES[getRandomArray(OFFERTYPES)],
+        type: getRandomArrayElement(OFFER_TYPES),
         rooms: getRandomRange(ROOMS_NUM_MAX, ROOMS_NUM_MIN),
         guests: getRandomRange(GUESTS_NUM_MAX, GUESTS_NUM_MIN),
-        checkin: OFFERCHECKINS[getRandomArray(OFFERCHECKINS)],
-        checkout: OFFERCHECKOUTS[getRandomArray(OFFERCHECKOUTS)],
-        features: OFFERFEATURES,
-        description: OFFERDESCRIPTIONS[getRandomArray(OFFERDESCRIPTIONS)],
-        photos: OFFERPHOTOS
+        checkin: getRandomArrayElement(OFFER_CHECKINS),
+        checkout: getRandomArrayElement(OFFER_CHECKOUTS),
+        features: generateRandomArray(FEATURE_OPTIONS),
+        description: 'Room description ' + (i + 1),
+        photos: generateRandomArray(OFFER_PHOTOS)
       },
       location: {
         x: getRandomRange(mapMaxX, MAP_MIN_X),
@@ -89,26 +74,35 @@ var getPins = function () {
   return pins;
 };
 
-// создание DOM-элементов, соответствующих меткам на карте и вставка элементов в блок .map__pins
-var similarListPin = document.querySelector('.map__pins');
-var similarPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-
 var renderPin = function (pinItem) {
+  var similarPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var pinElement = similarPinTemplate.cloneNode(true);
+  var pinElementImg = pinElement.querySelector('img');
 
   pinElement.style.left = pinItem.location.x - (PIN_WIDTH / 2) + 'px';
   pinElement.style.top = pinItem.location.y - PIN_HEIGHT + 'px';
-  pinElement.querySelector('img').src = pinItem.author.avatar;
-  pinElement.querySelector('img').alt = pinItem.offer.title;
+  pinElementImg.src = pinItem.author.avatar;
+  pinElementImg.alt = pinItem.offer.title;
 
   return pinElement;
 };
 
-var fragment = document.createDocumentFragment();
-for (var i = 0; i < ADVERT_NUM_MAX; i++) {
-  fragment.appendChild(renderPin(getPins()[i]));
-}
-similarListPin.appendChild(fragment);
+var addPinsToDom = function (elements) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < pins.length; i++) {
+    fragment.appendChild(renderPin(elements[i]));
+  }
+  similarListPin.appendChild(fragment);
+};
 
-var userDialog = document.querySelector('.map');
-userDialog.classList.remove('map--faded');
+var makeMapActive = function () {
+  var userDialog = document.querySelector('.map');
+  userDialog.classList.remove('map--faded');
+};
+
+
+var pins = getPins();
+
+addPinsToDom(pins);
+
+makeMapActive();
