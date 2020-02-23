@@ -99,7 +99,97 @@ var addPinsToDom = function (elements) {
 var pins = getPins();
 
 
+// task3-3
 var map = document.querySelector('.map');
+var mapFilters = map.querySelector('.map__filters-container');
+
+var renderCardData = function (cardItem) {
+  var cardPopupTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var cardElement = cardPopupTemplate.cloneNode(true);
+  var cardElementAvatar = cardElement.querySelector('.popup__avatar');
+  var cardElementTitle = cardElement.querySelector('.popup__title');
+  var cardElementAddress = cardElement.querySelector('.popup__text--address');
+  var cardElementPrice = cardElement.querySelector('.popup__text--price');
+  var cardElementType = cardElement.querySelector('.popup__type');
+  var cardElementCapacity = cardElement.querySelector('.popup__text--capacity');
+  var cardElementTime = cardElement.querySelector('.popup__text--time');
+  var cardElementFeatures = cardElement.querySelector('.popup__features');
+  var cardElementDescription = cardElement.querySelector('.popup__description');
+  var cardElementPhotos = cardElement.querySelector('.popup__photos');
+
+  var getType = function () {
+    var typeName = cardItem.offer.type;
+    switch (typeName) {
+      case 'flat': typeName = 'Квартира';
+        break;
+      case 'bungalo': typeName = 'Бунгало';
+        break;
+      case 'house': typeName = 'Дом';
+        break;
+      case 'palace': typeName = 'Дворец';
+        break;
+    }
+    return typeName;
+  };
+
+  var getFeatures = function () {
+    var featureDomList = cardElementFeatures.querySelectorAll('.popup__feature');
+    for (var n = 0; n < featureDomList.length; n++) {
+      var featureDataItem = cardItem.offer.features[n];
+      featureDomList[n].style.display = 'none';
+      if (featureDataItem === 'wifi') {
+        featureDomList[n].style.display = 'inline-block';
+      } else if (featureDataItem === 'dishwasher') {
+        featureDomList[n].style.display = 'inline-block';
+      } else if (featureDataItem === 'parking') {
+        featureDomList[n].style.display = 'inline-block';
+      } else if (featureDataItem === 'washer') {
+        featureDomList[n].style.display = 'inline-block';
+      } else if (featureDataItem === 'elevator') {
+        featureDomList[n].style.display = 'inline-block';
+      } else if (featureDataItem === 'conditioner') {
+        featureDomList[n].style.display = 'inline-block';
+      }
+    }
+  };
+
+  var renderCardImg = function (photoList) {
+    var cardDomPhotos = cardElementPhotos.querySelectorAll('.popup__photo');
+    if (cardDomPhotos.length >= 1) {
+      cardDomPhotos[0].src = photoList[0];
+      for (var m = 1; m < photoList.length; m++) {
+        var newImg = document.createElement('img');
+        newImg.src = photoList[m];
+        newImg.classList.add('popup__photo');
+        newImg.width = 45;
+        newImg.height = 40;
+        newImg.alt = cardItem.offer.title;
+        cardElementPhotos.appendChild(newImg);
+      }
+    }
+  };
+
+  cardElementAvatar.src = cardItem.author.avatar;
+  cardElementTitle.textContent = cardItem.offer.title;
+  cardElementAddress.textContent = cardItem.offer.address;
+  cardElementPrice.textContent = cardItem.offer.price + ' ₽/ночь';
+  cardElementType.textContent = getType();
+  cardElementCapacity.textContent = cardItem.offer.rooms + ' комнаты для ' + cardItem.offer.guests + ' гостей';
+  cardElementTime.textContent = 'Заезд после ' + cardItem.offer.checkin + ', выезд до ' + cardItem.offer.checkout;
+  getFeatures();
+  cardElementDescription.textContent = cardItem.offer.description;
+  renderCardImg(cardItem.offer.photos);
+
+  return cardElement;
+};
+
+var addCardsToDom = function (cards) {
+  var fragment = document.createDocumentFragment();
+  fragment.appendChild(renderCardData(cards[0]));
+  map.insertBefore(fragment, mapFilters);
+};
+
+
 var formsContainer = document.querySelector('.ad-form');
 var formElements = formsContainer.querySelectorAll('.ad-form__element');
 var filterContainer = document.querySelector('.map__filters');
@@ -148,6 +238,7 @@ var makeMapActive = function () {
   makeFormsActive(filterElements);
   mainPin.removeEventListener('keydown', mapEnterHandler);
   getMainPinAddress(true);
+  addCardsToDom(pins);
 };
 
 var mapEnterHandler = function (evt) {
