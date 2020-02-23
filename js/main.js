@@ -32,7 +32,7 @@ var getRandomRange = function (max, min) {
 };
 
 var generateRandomArray = function (predefinedArray) {
-  var randomNum = getRandomRange(predefinedArray.length, 1);
+  var randomNum = Math.ceil(Math.random() * predefinedArray.length);
   return predefinedArray.slice(0, randomNum);
 };
 
@@ -89,20 +89,119 @@ var renderPin = function (pinItem) {
 
 var addPinsToDom = function (elements) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < pins.length; i++) {
+  for (var i = 0; i < elements.length; i++) {
     fragment.appendChild(renderPin(elements[i]));
   }
   similarListPin.appendChild(fragment);
 };
 
-var makeMapActive = function () {
-  var userDialog = document.querySelector('.map');
-  userDialog.classList.remove('map--faded');
-};
-
 
 var pins = getPins();
 
-addPinsToDom(pins);
 
-makeMapActive();
+var map = document.querySelector('.map');
+var formsContainer = document.querySelector('.ad-form');
+var formElements = formsContainer.querySelectorAll('.ad-form__element');
+var filterContainer = document.querySelector('.map__filters');
+var filterElements = filterContainer.children;
+var addressForm = formsContainer.querySelector('#address');
+var mainPin = document.querySelector('.map__pin--main');
+var mainPinImg = mainPin.querySelector('img');
+var adRooms = formsContainer.querySelector('#room_number');
+var adCapacity = formsContainer.querySelector('#capacity');
+var mainPinWidth = mainPinImg.offsetWidth;
+var mainPinHeight = mainPinImg.offsetHeight;
+var mainPinPointer = window.getComputedStyle(mainPin, ':after').getPropertyValue('border-top-width');
+
+
+// define main pin pointer height to use it for calculation Y location of the main pin
+var splitString = function (stringToSplit, separator) {
+  var splitResult = stringToSplit.split(separator);
+  var result = +splitResult[0];
+  return result;
+};
+
+
+var makeFormsDisabled = function (formsList) {
+  for (var i = 0; i < formsList.length; i++) {
+    formsList[i].setAttribute('disabled', '');
+    formsList[i].style.cursor = 'default';
+  }
+};
+
+var makeFormsActive = function (formsList) {
+  for (var i = 0; i < formsList.length; i++) {
+    formsList[i].removeAttribute('disabled');
+    formsList[i].removeAttribute('style');
+  }
+};
+
+var activateMap = function () {
+  map.classList.remove('map--faded');
+};
+
+var makeMapActive = function () {
+  activateMap();
+  addPinsToDom(pins);
+  formsContainer.classList.remove('ad-form--disabled');
+  makeFormsActive(formElements);
+  makeFormsActive(filterElements);
+  mainPin.removeEventListener('keydown', mapEnterHandler);
+  getMainPinAddress(true);
+};
+
+var mapEnterHandler = function (evt) {
+  if (evt.key === 'Enter') {
+    makeMapActive();
+  }
+};
+
+var getMainPinAddress = function (isActive) {
+  var pinLeftPosition = mainPin.offsetLeft;
+  var pinTopPosition = mainPin.offsetTop;
+  addressForm.value = (pinLeftPosition + mainPinWidth / 2) + ', ' + (pinTopPosition + mainPinHeight / 2);
+
+  if (isActive) {
+    var mainPinPointerHeight = splitString(mainPinPointer, 'px');
+    addressForm.value = (pinLeftPosition + mainPinWidth / 2) + ', ' + (pinTopPosition + mainPinHeight / 2 + mainPinPointerHeight);
+  }
+};
+
+var checkSelectValidity = function () {
+  var roomsOption = adRooms.value;
+  var capacityOption = adCapacity.value;
+
+  if (roomsOption === '1' && (capacityOption === '2' || capacityOption === '3' || capacityOption === '0')) {
+    adCapacity.setCustomValidity('not for 1 room');
+  } else if (roomsOption === '2' && (capacityOption === '3' || capacityOption === '0')) {
+    adCapacity.setCustomValidity('not for 2 rooms');
+  } else if (roomsOption === '3' && capacityOption === '0') {
+    adCapacity.setCustomValidity('not for 3 rooms');
+  } else if (roomsOption === '100' && (capacityOption === '1' || capacityOption === '2' || capacityOption === '3')) {
+    adCapacity.setCustomValidity('not for 100 rooms');
+  } else {
+    adCapacity.setCustomValidity('');
+  }
+};
+
+makeFormsDisabled(formElements);
+makeFormsDisabled(filterElements);
+
+getMainPinAddress();
+
+mainPin.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    makeMapActive();
+  }
+});
+
+mainPin.addEventListener('keydown', mapEnterHandler);
+
+
+adRooms.addEventListener('change', function () {
+  checkSelectValidity();
+});
+
+adCapacity.addEventListener('change', function () {
+  checkSelectValidity();
+});
