@@ -32,7 +32,7 @@ var getRandomRange = function (max, min) {
 };
 
 var generateRandomArray = function (predefinedArray) {
-  var randomNum = getRandomRange(predefinedArray.length, 1);
+  var randomNum = Math.ceil(Math.random() * predefinedArray.length);
   return predefinedArray.slice(0, randomNum);
 };
 
@@ -89,7 +89,7 @@ var renderPin = function (pinItem) {
 
 var addPinsToDom = function (elements) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < pins.length; i++) {
+  for (var i = 0; i < elements.length; i++) {
     fragment.appendChild(renderPin(elements[i]));
   }
   similarListPin.appendChild(fragment);
