@@ -81,7 +81,9 @@
 
   var addCardsToDom = function (cards) {
     var fragment = document.createDocumentFragment();
-    fragment.appendChild(renderCardData(cards[0]));
+    for (var i = 0; i < cards.length; i++) {
+      fragment.appendChild(renderCardData(cards[i]));
+    }
     window.util.map.insertBefore(fragment, mapFilters);
   };
 
