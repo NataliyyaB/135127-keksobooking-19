@@ -16,6 +16,7 @@
     return pinElement;
   };
 
+
   var addPinsToDom = function (elements) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < elements.length; i++) {
