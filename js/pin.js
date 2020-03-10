@@ -2,6 +2,20 @@
 
 (function () {
   var similarListPin = document.querySelector('.map__pins');
+  var addressForm = window.util.formsContainer.querySelector('#address');
+  var mainPinImg = window.util.mainPin.querySelector('img');
+  var mainPinWidth = mainPinImg.offsetWidth;
+  var mainPinHeight = mainPinImg.offsetHeight;
+  var mainPinPointer = window.getComputedStyle(window.util.mainPin, ':after').getPropertyValue('border-top-width');
+
+  // define main pin pointer height to use it for calculation Y location of the main pin
+  var splitString = function (stringToSplit, separator) {
+    var splitResult = stringToSplit.split(separator);
+    var result = +splitResult[0];
+    return result;
+  };
+  var mainPinPointerHeight = splitString(mainPinPointer, 'px');
+
 
   var renderPin = function (pinItem) {
     var similarPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -16,17 +30,29 @@
     return pinElement;
   };
 
+  var getMainPinAddress = function (isActive) {
+    var pinLeftPosition = window.util.mainPin.offsetLeft;
+    var pinTopPosition = window.util.mainPin.offsetTop;
+    addressForm.value = (pinLeftPosition + mainPinWidth / 2) + ', ' + (pinTopPosition + mainPinHeight / 2);
+
+    if (isActive) {
+      addressForm.value = (window.util.mainPin.offsetLeft + mainPinWidth / 2) + ', ' + (window.util.mainPin.offsetTop + mainPinHeight + mainPinPointerHeight);
+    }
+  };
 
   var addPinsToDom = function (elements) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < elements.length; i++) {
-      fragment.appendChild(renderPin(elements[i]));
+      var newPin = renderPin(elements[i]);
+      newPin.id = i;
+      fragment.appendChild(newPin);
     }
     similarListPin.appendChild(fragment);
   };
 
   window.pin = {
-    addPinsToDom: addPinsToDom
+    addPinsToDom: addPinsToDom,
+    getMainPinAddress: getMainPinAddress
   };
 
 })();

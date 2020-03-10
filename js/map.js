@@ -25,24 +25,25 @@
     window.form.makeFormsActive(window.form.filterElements);
     window.util.mainPin.removeEventListener('keydown', mapEnterHandler);
     window.util.mainPin.removeEventListener('mousedown', mapMouseHandler);
-    window.form.getMainPinAddress(true);
+    window.pin.getMainPinAddress(true);
 
-    window.card.addCardsToDom(window.loadResult);
-    var cards = window.util.map.querySelectorAll('.map__card');
-    for (var j = 0; j < cards.length; j++) {
-      cards[j].style.display = 'none';
-    }
+    var pins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
+    window.card.showPinCard(pins);
   };
 
   window.util.mainPin.addEventListener('mousedown', mapMouseHandler);
   window.util.mainPin.addEventListener('keydown', mapEnterHandler);
 
-  window.util.adRooms.addEventListener('change', function () {
-    window.form.checkSelectValidity();
-  });
+  window.util.adRooms.addEventListener('change', window.form.selectValidityHandler);
+  window.util.adCapacity.addEventListener('change', window.form.selectValidityHandler);
 
-  window.util.adCapacity.addEventListener('change', function () {
-    window.form.checkSelectValidity();
-  });
+  window.form.typeForm.addEventListener('change', window.form.setPriceHandler);
+
+  window.form.checkinForm.addEventListener('change', window.form.setcheckinsHandler);
+  window.form.checkoutForm.addEventListener('change', window.form.setcheckinsHandler);
+
+  window.map = {
+    mapEnterHandler: mapEnterHandler
+  };
 
 })();
