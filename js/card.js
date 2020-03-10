@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var mapFilters = window.util.map.querySelector('.map__filters-container');
+
 
   var renderCardData = function (cardItem) {
     var cardPopupTemplate = document.querySelector('#card').content.querySelector('.map__card');
@@ -27,7 +27,7 @@
           return 'Дом';
         case 'palace':
           return 'Дворец';
-        default: return 'no type found';
+        default: return 'Тип не определен';
       }
     };
 
@@ -54,6 +54,9 @@
 
     var renderCardImg = function (photoList) {
       var cardDomPhoto = cardElementPhotos.querySelector('.popup__photo');
+      if (photoList.length === 0) {
+        cardDomPhoto.style.display = 'none';
+      }
       for (var m = 0; m < photoList.length; m++) {
         if (m === 0) {
           cardDomPhoto.src = photoList[0];
@@ -79,16 +82,84 @@
     return cardElement;
   };
 
-  var addCardsToDom = function (cards) {
+  var addCardsToDom = function (cardItem) {
+    var mapFilters = window.util.map.querySelector('.map__filters-container');
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < cards.length; i++) {
-      fragment.appendChild(renderCardData(cards[i]));
-    }
+    var item = fragment.appendChild(renderCardData(cardItem));
     window.util.map.insertBefore(fragment, mapFilters);
+
+    var closeBtn = item.querySelector('.popup__close');
+    closeBtn.addEventListener('click', buttonClickHandler);
+    document.addEventListener('keydown', buttonEscHandler);
+
+    return item;
   };
 
+  var openCard = function (evt) {
+    evt.preventDefault();
+    var target = evt.currentTarget;
+    var targetNumber = target.id;
+
+    var card = window.util.map.querySelector('.map__card');
+    if (card) {
+      card.remove();
+      card = null;
+      card = addCardsToDom(window.loadResult[targetNumber]);
+    } else {
+      card = addCardsToDom(window.loadResult[targetNumber]);
+    }
+  };
+
+  var pinClickHandler = function (evt) {
+    if (evt.button === 0) {
+      openCard(evt);
+    }
+  };
+
+  var pinEnterHandler = function (evt) {
+    if (evt.key === 'Enter') {
+      openCard(evt);
+    }
+  };
+
+  var removeCard = function () {
+    var openedCard = window.util.map.querySelector('.map__card');
+    if (openedCard) {
+      openedCard.remove();
+    }
+    document.removeEventListener('keydown', buttonEscHandler);
+  };
+
+  var buttonClickHandler = function (evt) {
+    if (evt.button === 0) {
+      removeCard();
+    }
+  };
+
+  var buttonEscHandler = function (evt) {
+    if (evt.key === 'Escape') {
+      removeCard();
+    }
+  };
+
+  var showPinCard = function (marks) {
+    for (var i = 0; i < marks.length; i++) {
+      marks[i].addEventListener('click', pinClickHandler);
+      marks[i].addEventListener('keydown', pinEnterHandler);
+
+      if (marks[i].className === 'map__pin map__pin--main') {
+        marks[i].removeEventListener('click', pinClickHandler);
+        marks[i].removeEventListener('keydown', pinEnterHandler);
+      }
+    }
+
+  };
+
+
   window.card = {
-    addCardsToDom: addCardsToDom
+    showPinCard: showPinCard,
+    removeCard: removeCard,
+    pinEnterHandler: pinEnterHandler
   };
 
 })();
