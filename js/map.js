@@ -19,7 +19,7 @@
 
   var makeMapActive = function () {
     activateMap();
-    window.pin.addPinsToDom(window.loadResult);
+    window.pin.renderLimitedPins(window.loadResult);
     window.util.formsContainer.classList.remove('ad-form--disabled');
     window.form.makeFormsActive(window.form.formElements);
     window.form.makeFormsActive(window.form.filterElements);
@@ -41,6 +41,8 @@
 
   window.form.checkinForm.addEventListener('change', window.form.setcheckinsHandler);
   window.form.checkoutForm.addEventListener('change', window.form.setcheckinsHandler);
+
+  window.filter.typefilterForm.addEventListener('change', window.filter.filterTypeHandler);
 
   window.map = {
     mapEnterHandler: mapEnterHandler

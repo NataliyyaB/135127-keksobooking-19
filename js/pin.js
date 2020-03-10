@@ -40,18 +40,27 @@
     }
   };
 
-  var addPinsToDom = function (elements) {
+  var renderLimitedPins = function (data) {
+    var takeNumber = data.length > 5 ? 5 : data.length;
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < elements.length; i++) {
-      var newPin = renderPin(elements[i]);
-      newPin.id = i;
+    var currentPins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
+    if (currentPins.length > 1) {
+      for (var i = 0; i < currentPins.length; i++) {
+        if (!currentPins[i].classList.contains('map__pin--main')) {
+          currentPins[i].remove();
+        }
+      }
+    }
+    for (var j = 0; j < takeNumber; j++) {
+      var newPin = renderPin(data[j]);
+      newPin.id = data[j].uniqueId;
       fragment.appendChild(newPin);
     }
     similarListPin.appendChild(fragment);
   };
 
   window.pin = {
-    addPinsToDom: addPinsToDom,
+    renderLimitedPins: renderLimitedPins,
     getMainPinAddress: getMainPinAddress
   };
 
