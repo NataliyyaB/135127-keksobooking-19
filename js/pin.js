@@ -15,6 +15,7 @@
     return result;
   };
   var mainPinPointerHeight = splitString(mainPinPointer, 'px');
+  var mainPinFullHeight = mainPinPointerHeight + mainPinHeight;
 
 
   var renderPin = function (pinItem) {
@@ -36,7 +37,7 @@
     addressForm.value = (pinLeftPosition + mainPinWidth / 2) + ', ' + (pinTopPosition + mainPinHeight / 2);
 
     if (isActive) {
-      addressForm.value = (window.util.mainPin.offsetLeft + mainPinWidth / 2) + ', ' + (window.util.mainPin.offsetTop + mainPinHeight + mainPinPointerHeight);
+      addressForm.value = (window.util.mainPin.offsetLeft + mainPinWidth / 2) + ', ' + (window.util.mainPin.offsetTop + mainPinFullHeight);
     }
   };
 
@@ -58,6 +59,65 @@
     }
     similarListPin.appendChild(fragment);
   };
+
+
+  var relocateMainPin = function (coords) {
+    window.util.mainPin.style.top = coords.y + 'px';
+    window.util.mainPin.style.left = coords.x + 'px';
+  };
+
+  window.util.mainPin.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var mouseMoveHandler = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      var finalCoords = {
+        x: window.util.mainPin.offsetLeft - shift.x,
+        y: window.util.mainPin.offsetTop - shift.y
+      };
+
+      if (finalCoords.x + mainPinWidth / 2 < window.util.coordsListMap.left || finalCoords.x + mainPinWidth / 2 > window.util.coordsListMap.right) {
+        finalCoords.x = window.util.mainPin.offsetLeft;
+      }
+      if (finalCoords.y + mainPinFullHeight < window.util.coordsListMap.top || finalCoords.y + mainPinFullHeight > window.util.coordsListMap.bottom) {
+        finalCoords.y = window.util.mainPin.offsetTop;
+      }
+
+      relocateMainPin(finalCoords);
+      getMainPinAddress(true);
+    };
+
+    var mouseUpHandler = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
+
+      getMainPinAddress(true);
+
+    };
+
+    document.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mouseup', mouseUpHandler);
+
+  });
+
 
   window.pin = {
     renderLimitedPins: renderLimitedPins,

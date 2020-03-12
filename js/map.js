@@ -25,7 +25,6 @@
     window.form.makeFormsActive(window.form.filterElements);
     window.util.mainPin.removeEventListener('keydown', mapEnterHandler);
     window.util.mainPin.removeEventListener('mousedown', mapMouseHandler);
-    window.pin.getMainPinAddress(true);
 
     var pins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
     window.card.showPinCard(pins);

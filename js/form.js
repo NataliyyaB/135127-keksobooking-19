@@ -46,12 +46,6 @@
     checkSelectValidity();
   };
 
-  makeFormsDisabled(formElements);
-  makeFormsDisabled(filterElements);
-
-  window.pin.getMainPinAddress();
-
-
   var setPrice = function () {
     var typeValue = typeForm.value;
     switch (typeValue) {
@@ -102,6 +96,11 @@
   var setcheckinsHandler = function () {
     setCheckinCkeckout();
   };
+
+  makeFormsDisabled(formElements);
+  makeFormsDisabled(filterElements);
+
+  window.pin.getMainPinAddress();
 
 
   window.form = {
