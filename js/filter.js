@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var DEBOUNCE_INTERVAL = 500;
+
   var selectedType = 'any';
   var selectedPrice = 'any';
   var selectedRooms = 'any';
@@ -37,12 +39,22 @@
         }));
     });
 
-    window.debounce(window.pin.renderLimitedPins(samePins));
 
-    window.card.removeCard();
+    window.debounce(function () {
+      window.pin.renderLimitedPins(samePins);
+      window.card.removeCard();
+      var currentPins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
+      window.card.showPinCard(currentPins);
+    });
+  };
 
-    var currentPins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
-    window.card.showPinCard(currentPins);
+
+  var lastTimeout;
+  window.debounce = function (cb) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(cb, DEBOUNCE_INTERVAL);
   };
 
 

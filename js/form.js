@@ -1,11 +1,9 @@
 'use strict';
 
 (function () {
-
   var formElements = window.util.formsContainer.querySelectorAll('.ad-form__element');
   var filterContainer = document.querySelector('.map__filters');
   var filterElements = filterContainer.children;
-
   var typeForm = window.util.formsContainer.querySelector('#type');
   var priceForm = window.util.formsContainer.querySelector('#price');
   var checkinForm = window.util.formsContainer.querySelector('#timein');
@@ -19,14 +17,14 @@
   };
 
   var makeFormsActive = function (formsList) {
-    for (var i = 0; i < formsList.length; i++) {
-      formsList[i].removeAttribute('disabled');
-      formsList[i].removeAttribute('style');
+    for (var j = 0; j < formsList.length; j++) {
+      formsList[j].removeAttribute('disabled');
+      formsList[j].removeAttribute('style');
     }
   };
 
   var checkRoomsValidity = function () {
-    var roomsOption = window.util.adRooms.value;
+    var roomsOption = window.util.adRoom.value;
     var capacityOption = window.util.adCapacity.value;
 
     if (roomsOption === '1' && (capacityOption === '2' || capacityOption === '3' || capacityOption === '0')) {
@@ -75,7 +73,6 @@
     setPrice();
   };
 
-
   var setCheckinCkeckout = function (selectedOption) {
     var timeResult;
     if (selectedOption.id === 'timein') {
@@ -112,13 +109,16 @@
     checkinForm.value = '12:00';
     checkoutForm.value = '12:00';
     typeForm.value = 'flat';
+    window.util.formPhoto.style = '';
+    window.util.avatar.src = 'img/muffin-grey.svg';
     setPrice();
-    window.util.adRooms.value = 1;
-    window.util.adCapacity.value = 1;
+    window.util.adRoom.value = '1';
+    window.util.adCapacity.value = '1';
+    checkRoomsValidity();
 
-    for (var j = 0; j < window.util.adFeatures.length; j++) {
-      if (window.util.adFeatures[j].checked === true) {
-        window.util.adFeatures[j].checked = false;
+    for (var k = 0; k < window.util.adFeatures.length; k++) {
+      if (window.util.adFeatures[k].checked === true) {
+        window.util.adFeatures[k].checked = false;
       }
     }
   };

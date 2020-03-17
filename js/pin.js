@@ -39,7 +39,7 @@
   };
 
   var renderLimitedPins = function (data) {
-    var takeNumber = data.length > 5 ? 5 : data.length;
+    var arrayLength = data.length > 5 ? 5 : data.length;
     var fragment = document.createDocumentFragment();
     var currentPins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
     if (currentPins.length > 1 || data.length === 0) {
@@ -49,7 +49,7 @@
         }
       }
     }
-    for (var j = 0; j < takeNumber; j++) {
+    for (var j = 0; j < arrayLength; j++) {
       var newPin = renderPin(data[j]);
       newPin.id = data[j].uniqueId;
       fragment.appendChild(newPin);

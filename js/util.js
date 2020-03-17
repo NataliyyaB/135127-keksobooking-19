@@ -13,10 +13,12 @@
   var mapPinsContainer = map.querySelector('.map__pins');
   var mainPin = document.querySelector('.map__pin--main');
   var formsContainer = document.querySelector('.ad-form');
-  var checkinCheckoutForms = formsContainer.querySelector('.ad-form__element--time');
+  var formPhoto = formsContainer.querySelector('.ad-form__photo');
+  var avatar = formsContainer.querySelector('.ad-form-header__preview img');
+  var checkinCheckoutForm = formsContainer.querySelector('.ad-form__element--time');
   var formsResetBtn = formsContainer.querySelector('.ad-form__reset');
   var addressForm = formsContainer.querySelector('#address');
-  var adRooms = formsContainer.querySelector('#room_number');
+  var adRoom = formsContainer.querySelector('#room_number');
   var adCapacity = formsContainer.querySelector('#capacity');
   var adTitle = formsContainer.querySelector('#title');
   var adDescription = formsContainer.querySelector('#description');
@@ -47,10 +49,12 @@
     mapPinsContainer: mapPinsContainer,
     mainPin: mainPin,
     formsContainer: formsContainer,
-    checkinCheckoutForms: checkinCheckoutForms,
+    formPhoto: formPhoto,
+    avatar: avatar,
+    checkinCheckoutForm: checkinCheckoutForm,
     formsResetBtn: formsResetBtn,
     addressForm: addressForm,
-    adRooms: adRooms,
+    adRoom: adRoom,
     adCapacity: adCapacity,
     adTitle: adTitle,
     adDescription: adDescription,
