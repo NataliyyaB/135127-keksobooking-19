@@ -25,14 +25,14 @@
     }
   };
 
-  var checkSelectValidity = function () {
+  var checkRoomsValidity = function () {
     var roomsOption = window.util.adRooms.value;
     var capacityOption = window.util.adCapacity.value;
 
     if (roomsOption === '1' && (capacityOption === '2' || capacityOption === '3' || capacityOption === '0')) {
       window.util.adCapacity.setCustomValidity('Не подходит для 1 комнаты');
     } else if (roomsOption === '2' && (capacityOption === '3' || capacityOption === '0')) {
-      window.util.adCapacity.setCustomValidity('Не подходит для 2ч комнат');
+      window.util.adCapacity.setCustomValidity('Не подходит для 2 комнат');
     } else if (roomsOption === '3' && capacityOption === '0') {
       window.util.adCapacity.setCustomValidity('Не подходит для 3 комнат');
     } else if (roomsOption === '100' && (capacityOption === '1' || capacityOption === '2' || capacityOption === '3')) {
@@ -42,8 +42,8 @@
     }
   };
 
-  var selectValidityHandler = function () {
-    checkSelectValidity();
+  var roomsValidityHandler = function () {
+    checkRoomsValidity();
   };
 
   var setPrice = function () {
@@ -75,17 +75,24 @@
     setPrice();
   };
 
-  var setCheckinCkeckout = function () {
-    var checkinValue = checkinForm.value;
-    switch (checkinValue) {
+
+  var setCheckinCkeckout = function (selectedOption) {
+    var timeResult;
+    if (selectedOption.id === 'timein') {
+      timeResult = checkoutForm;
+    } else {
+      timeResult = checkinForm;
+    }
+
+    switch (selectedOption.value) {
       case '12:00':
-        checkoutForm.value = '12:00';
+        timeResult.value = '12:00';
         break;
       case '13:00':
-        checkoutForm.value = '13:00';
+        timeResult.value = '13:00';
         break;
       case '14:00':
-        checkoutForm.value = '14:00';
+        timeResult.value = '14:00';
         break;
       default: return 'no type found';
     }
@@ -93,13 +100,37 @@
     return undefined;
   };
 
-  var setcheckinsHandler = function () {
-    setCheckinCkeckout();
+  var setCheckinsHandler = function (evt) {
+    var target = evt.target;
+    setCheckinCkeckout(target);
   };
+
+  var clearForms = function () {
+    window.util.adTitle.value = '';
+    window.util.adDescription.value = '';
+    priceForm.value = '';
+    checkinForm.value = '12:00';
+    checkoutForm.value = '12:00';
+    typeForm.value = 'flat';
+    setPrice();
+    window.util.adRooms.value = 1;
+    window.util.adCapacity.value = 1;
+
+    for (var j = 0; j < window.util.adFeatures.length; j++) {
+      if (window.util.adFeatures[j].checked === true) {
+        window.util.adFeatures[j].checked = false;
+      }
+    }
+  };
+
+  var resetBtnHandler = function (evt) {
+    evt.preventDefault();
+    clearForms();
+  };
+
 
   makeFormsDisabled(formElements);
   makeFormsDisabled(filterElements);
-
   window.pin.getMainPinAddress();
 
 
@@ -108,14 +139,17 @@
     filterElements: filterElements,
     makeFormsActive: makeFormsActive,
     makeFormsDisabled: makeFormsDisabled,
-    checkSelectValidity: checkSelectValidity,
-    selectValidityHandler: selectValidityHandler,
+    checkRoomsValidity: checkRoomsValidity,
+    roomsValidityHandler: roomsValidityHandler,
     typeForm: typeForm,
+    priceForm: priceForm,
+    setPrice: setPrice,
     setPriceHandler: setPriceHandler,
     checkinForm: checkinForm,
     checkoutForm: checkoutForm,
-    setcheckinsHandler: setcheckinsHandler,
-    setCheckinCkeckout: setCheckinCkeckout
+    setCheckinsHandler: setCheckinsHandler,
+    clearForms: clearForms,
+    resetBtnHandler: resetBtnHandler
   };
 
 })();

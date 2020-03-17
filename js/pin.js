@@ -2,7 +2,6 @@
 
 (function () {
   var similarListPin = document.querySelector('.map__pins');
-  var addressForm = window.util.formsContainer.querySelector('#address');
   var mainPinImg = window.util.mainPin.querySelector('img');
   var mainPinWidth = mainPinImg.offsetWidth;
   var mainPinHeight = mainPinImg.offsetHeight;
@@ -32,12 +31,10 @@
   };
 
   var getMainPinAddress = function (isActive) {
-    var pinLeftPosition = window.util.mainPin.offsetLeft;
-    var pinTopPosition = window.util.mainPin.offsetTop;
-    addressForm.value = (pinLeftPosition + mainPinWidth / 2) + ', ' + (pinTopPosition + mainPinHeight / 2);
+    window.util.addressForm.value = (window.util.initialMainPinCoordsMap.x + mainPinWidth / 2) + ', ' + (window.util.initialMainPinCoordsMap.y + mainPinHeight / 2);
 
     if (isActive) {
-      addressForm.value = (window.util.mainPin.offsetLeft + mainPinWidth / 2) + ', ' + (window.util.mainPin.offsetTop + mainPinFullHeight);
+      window.util.addressForm.value = (window.util.mainPin.offsetLeft + mainPinWidth / 2) + ', ' + (window.util.mainPin.offsetTop + mainPinFullHeight);
     }
   };
 
@@ -45,7 +42,7 @@
     var takeNumber = data.length > 5 ? 5 : data.length;
     var fragment = document.createDocumentFragment();
     var currentPins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
-    if (currentPins.length > 1) {
+    if (currentPins.length > 1 || data.length === 0) {
       for (var i = 0; i < currentPins.length; i++) {
         if (!currentPins[i].classList.contains('map__pin--main')) {
           currentPins[i].remove();
@@ -66,7 +63,8 @@
     window.util.mainPin.style.left = coords.x + 'px';
   };
 
-  window.util.mainPin.addEventListener('mousedown', function (evt) {
+
+  var mainPinDraggableHandler = function (evt) {
     evt.preventDefault();
 
     var startCoords = {
@@ -110,18 +108,20 @@
       document.removeEventListener('mouseup', mouseUpHandler);
 
       getMainPinAddress(true);
-
     };
 
     document.addEventListener('mousemove', mouseMoveHandler);
     document.addEventListener('mouseup', mouseUpHandler);
+  };
 
-  });
+  window.util.mainPin.addEventListener('mousedown', mainPinDraggableHandler);
 
 
   window.pin = {
     renderLimitedPins: renderLimitedPins,
-    getMainPinAddress: getMainPinAddress
+    getMainPinAddress: getMainPinAddress,
+    mainPinDraggableHandler: mainPinDraggableHandler,
+    relocateMainPin: relocateMainPin
   };
 
 })();
