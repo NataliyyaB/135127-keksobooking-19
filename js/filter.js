@@ -37,7 +37,7 @@
         }));
     });
 
-    window.pin.renderLimitedPins(samePins);
+    window.debounce(window.pin.renderLimitedPins(samePins));
 
     window.card.removeCard();
 
