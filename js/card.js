@@ -34,20 +34,9 @@
     var getFeatures = function () {
       var featureDomList = cardElementFeatures.querySelectorAll('.popup__feature');
       for (var n = 0; n < featureDomList.length; n++) {
-        var featureDataItem = cardItem.offer.features[n];
-        featureDomList[n].style.display = 'none';
-        if (featureDataItem === 'wifi') {
-          featureDomList[n].style.display = 'inline-block';
-        } else if (featureDataItem === 'dishwasher') {
-          featureDomList[n].style.display = 'inline-block';
-        } else if (featureDataItem === 'parking') {
-          featureDomList[n].style.display = 'inline-block';
-        } else if (featureDataItem === 'washer') {
-          featureDomList[n].style.display = 'inline-block';
-        } else if (featureDataItem === 'elevator') {
-          featureDomList[n].style.display = 'inline-block';
-        } else if (featureDataItem === 'conditioner') {
-          featureDomList[n].style.display = 'inline-block';
+        var currentFeature = featureDomList[n].classList[1].split('--')[1];
+        if (!cardItem.offer.features.includes(currentFeature)) {
+          featureDomList[n].style.display = 'none';
         }
       }
     };
