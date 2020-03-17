@@ -28,13 +28,12 @@
 
     window.form.makeFormsActive(window.form.formElements);
     window.form.makeFormsActive(window.form.filterElements);
-    window.util.adRooms.addEventListener('change', window.form.roomsValidityHandler);
+    window.util.adRoom.addEventListener('change', window.form.roomsValidityHandler);
     window.util.adCapacity.addEventListener('change', window.form.roomsValidityHandler);
     window.form.typeForm.addEventListener('change', window.form.setPriceHandler);
-    // window.form.checkinForm.addEventListener('change', window.form.setCheckinsHandler);
-    // window.form.checkoutForm.addEventListener('change', window.form.setCheckinsHandler);
-    window.util.checkinCheckoutForms.addEventListener('change', window.form.setCheckinsHandler);
+    window.util.checkinCheckoutForm.addEventListener('change', window.form.setCheckinsHandler);
     window.util.formsResetBtn.addEventListener('click', window.form.resetBtnHandler);
+    window.util.formsContainer.addEventListener('change', window.file.photoUploadHandler);
 
     var pins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
     window.card.showPinCard(pins);
@@ -44,6 +43,7 @@
   window.util.mainPin.addEventListener('keydown', mainPinEnterHandler);
 
   window.util.filterForm.addEventListener('change', window.filter.filterChangeHandler);
+
 
   window.map = {
     mainPinMouseHandler: mainPinMouseHandler,

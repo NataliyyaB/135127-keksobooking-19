@@ -1,9 +1,8 @@
 'use strict';
 
 (function () {
-
-
   var renderCardData = function (cardItem) {
+
     var cardPopupTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var cardElement = cardPopupTemplate.cloneNode(true);
     var cardElementAvatar = cardElement.querySelector('.popup__avatar');
@@ -33,10 +32,10 @@
 
     var getFeatures = function () {
       var featureDomList = cardElementFeatures.querySelectorAll('.popup__feature');
-      for (var n = 0; n < featureDomList.length; n++) {
-        var currentFeature = featureDomList[n].classList[1].split('--')[1];
+      for (var j = 0; j < featureDomList.length; j++) {
+        var currentFeature = featureDomList[j].classList[1].split('--')[1];
         if (!cardItem.offer.features.includes(currentFeature)) {
-          featureDomList[n].style.display = 'none';
+          featureDomList[j].style.display = 'none';
         }
       }
     };
@@ -46,12 +45,12 @@
       if (photoList.length === 0) {
         cardDomPhoto.style.display = 'none';
       }
-      for (var m = 0; m < photoList.length; m++) {
-        if (m === 0) {
+      for (var k = 0; k < photoList.length; k++) {
+        if (k === 0) {
           cardDomPhoto.src = photoList[0];
         } else {
           var newImg = cardDomPhoto.cloneNode(true);
-          newImg.src = photoList[m];
+          newImg.src = photoList[k];
           cardElementPhotos.appendChild(newImg);
         }
       }
@@ -72,10 +71,10 @@
   };
 
   var addCardsToDom = function (cardItem) {
-    var mapFilters = window.util.map.querySelector('.map__filters-container');
+    var mapFilter = window.util.map.querySelector('.map__filters-container');
     var fragment = document.createDocumentFragment();
     var item = fragment.appendChild(renderCardData(cardItem));
-    window.util.map.insertBefore(fragment, mapFilters);
+    window.util.map.insertBefore(fragment, mapFilter);
 
     var closeBtn = item.querySelector('.popup__close');
     closeBtn.addEventListener('click', buttonClickHandler);
@@ -141,7 +140,6 @@
         marks[i].removeEventListener('keydown', pinEnterHandler);
       }
     }
-
   };
 
 

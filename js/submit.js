@@ -63,6 +63,11 @@
     window.form.makeFormsDisabled(window.form.filterElements);
     window.form.clearForms();
     window.util.formsResetBtn.removeEventListener('click', window.form.resetBtnHandler);
+    window.util.formsContainer.removeEventListener('change', window.file.photoUploadHandler);
+    window.util.adRoom.removeEventListener('change', window.form.formValidityHandler);
+    window.util.adCapacity.removeEventListener('change', window.form.formValidityHandler);
+    window.form.checkinForm.removeEventListener('change', window.form.checkSelectionHandler);
+    window.form.checkoutForm.removeEventListener('change', window.form.checkSelectionHandler);
 
     var currentPins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
     if (currentPins.length > 1) {
@@ -80,12 +85,6 @@
 
     window.util.mainPin.addEventListener('mousedown', window.map.mainPinMouseHandler);
     window.util.mainPin.addEventListener('keydown', window.map.mainPinEnterHandler);
-
-    window.util.adRooms.removeEventListener('change', window.form.formValidityHandler);
-    window.util.adCapacity.removeEventListener('change', window.form.formValidityHandler);
-
-    window.form.checkinForm.removeEventListener('change', window.form.checkSelectionHandler);
-    window.form.checkoutForm.removeEventListener('change', window.form.checkSelectionHandler);
   };
 
 
