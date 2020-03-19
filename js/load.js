@@ -3,13 +3,15 @@
 (function () {
   var TIMEOUT_IN_MS = 10000;
   var URL = 'https://js.dump.academy/keksobooking/data';
+  var messageTopPosition = 0;
+  var messageLeftPosition = 0;
 
   var errorHandler = function (errorMessage) {
     var node = document.createElement('div');
     node.style = 'z-index: 100; margin: 0 auto; padding: 20px; text-align: center; color: #ffffff; background-color: #ff5635e6;';
     node.style.position = 'absolute';
-    node.style.left = 0;
-    node.style.right = 0;
+    node.style.left = messageTopPosition;
+    node.style.right = messageLeftPosition;
     node.style.fontSize = '25px';
 
     node.textContent = errorMessage;
@@ -20,10 +22,13 @@
     for (var i = 0; i < data.length; i++) {
       data[i].uniqueId = i;
     }
+    window.pin.renderLimitedItems(data);
     window.loadResult = data;
+    var pins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
+    window.card.show(pins);
   };
 
-  var loadData = function (onSuccess, onError) {
+  var getData = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
@@ -65,6 +70,10 @@
     xhr.send();
   };
 
-  loadData(successHandler, errorHandler);
+  window.load = {
+    getData: getData,
+    successHandler: successHandler,
+    errorHandler: errorHandler
+  };
 
 })();

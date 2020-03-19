@@ -2,7 +2,6 @@
 
 (function () {
   var renderCardData = function (cardItem) {
-
     var cardPopupTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var cardElement = cardPopupTemplate.cloneNode(true);
     var cardElementAvatar = cardElement.querySelector('.popup__avatar');
@@ -16,28 +15,22 @@
     var cardElementDescription = cardElement.querySelector('.popup__description');
     var cardElementPhotos = cardElement.querySelector('.popup__photos');
 
-    var getType = function (typeName) {
-      switch (typeName) {
-        case 'flat':
-          return 'Квартира';
-        case 'bungalo':
-          return 'Бунгало';
-        case 'house':
-          return 'Дом';
-        case 'palace':
-          return 'Дворец';
-        default: return 'Тип не определен';
-      }
+    var advertTypeMap = {
+      flat: 'Квартира',
+      bungalo: 'Бунгало',
+      house: 'Дом',
+      palace: 'Дворец'
     };
 
     var getFeatures = function () {
       var featureDomList = cardElementFeatures.querySelectorAll('.popup__feature');
-      for (var j = 0; j < featureDomList.length; j++) {
-        var currentFeature = featureDomList[j].classList[1].split('--')[1];
+
+      featureDomList.forEach(function (featureDomItem) {
+        var currentFeature = featureDomItem.classList[1].split('--')[1];
         if (!cardItem.offer.features.includes(currentFeature)) {
-          featureDomList[j].style.display = 'none';
+          featureDomItem.style.display = 'none';
         }
-      }
+      });
     };
 
     var renderCardImg = function (photoList) {
@@ -45,12 +38,12 @@
       if (photoList.length === 0) {
         cardDomPhoto.style.display = 'none';
       }
-      for (var k = 0; k < photoList.length; k++) {
-        if (k === 0) {
+      for (var i = 0; i < photoList.length; i++) {
+        if (i === 0) {
           cardDomPhoto.src = photoList[0];
         } else {
           var newImg = cardDomPhoto.cloneNode(true);
-          newImg.src = photoList[k];
+          newImg.src = photoList[i];
           cardElementPhotos.appendChild(newImg);
         }
       }
@@ -60,7 +53,7 @@
     cardElementTitle.textContent = cardItem.offer.title;
     cardElementAddress.textContent = cardItem.offer.address;
     cardElementPrice.textContent = cardItem.offer.price + ' ₽/ночь';
-    cardElementType.textContent = getType(cardItem.offer.type);
+    cardElementType.textContent = advertTypeMap[cardItem.offer.type];
     cardElementCapacity.textContent = cardItem.offer.rooms + ' комнаты для ' + cardItem.offer.guests + ' гостей';
     cardElementTime.textContent = 'Заезд после ' + cardItem.offer.checkin + ', выезд до ' + cardItem.offer.checkout;
     getFeatures();
@@ -86,31 +79,46 @@
   var openCard = function (evt) {
     evt.preventDefault();
     var target = evt.currentTarget;
-    var targetNumber = target.id;
+    var targetId = target.id;
+
+    var currentPins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
+
+    currentPins.forEach(function (currentPin) {
+      if (currentPin.classList.contains('map__pin--active')) {
+        currentPin.classList.remove('map__pin--active');
+      }
+    });
+
+    target.classList.add('map__pin--active');
 
     var card = window.util.map.querySelector('.map__card');
     if (card) {
       card.remove();
       card = null;
-      card = addCardsToDom(window.loadResult[targetNumber]);
+      card = addCardsToDom(window.loadResult[targetId]);
     } else {
-      card = addCardsToDom(window.loadResult[targetNumber]);
+      card = addCardsToDom(window.loadResult[targetId]);
     }
   };
 
   var pinClickHandler = function (evt) {
-    if (evt.button === 0) {
+    if (evt.button === window.util.UserEvents.MOUSE_LEFT_BUTTON) {
       openCard(evt);
     }
   };
 
   var pinEnterHandler = function (evt) {
-    if (evt.key === 'Enter') {
+    if (evt.key === window.util.UserEvents.KEYBOARD_ENTER) {
       openCard(evt);
     }
   };
 
-  var removeCard = function () {
+  var remove = function () {
+    var currentActivePin = window.util.mapPinsContainer.querySelector('.map__pin--active');
+    if (currentActivePin) {
+      currentActivePin.classList.remove('map__pin--active');
+    }
+
     var openedCard = window.util.map.querySelector('.map__card');
     if (openedCard) {
       openedCard.remove();
@@ -119,33 +127,30 @@
   };
 
   var buttonClickHandler = function (evt) {
-    if (evt.button === 0) {
-      removeCard();
+    if (evt.button === window.util.UserEvents.MOUSE_LEFT_BUTTON) {
+      remove();
     }
   };
 
   var buttonEscHandler = function (evt) {
-    if (evt.key === 'Escape') {
-      removeCard();
+    if (evt.key === window.util.UserEvents.KEYBOARD_ESCAPE) {
+      remove();
     }
   };
 
-  var showPinCard = function (marks) {
-    for (var i = 0; i < marks.length; i++) {
-      marks[i].addEventListener('click', pinClickHandler);
-      marks[i].addEventListener('keydown', pinEnterHandler);
-
-      if (marks[i].className === 'map__pin map__pin--main') {
-        marks[i].removeEventListener('click', pinClickHandler);
-        marks[i].removeEventListener('keydown', pinEnterHandler);
+  var show = function (marks) {
+    marks.forEach(function (mark) {
+      if (!mark.classList.contains('map__pin--main')) {
+        mark.addEventListener('click', pinClickHandler);
+        mark.addEventListener('keydown', pinEnterHandler);
       }
-    }
+    });
   };
 
 
   window.card = {
-    showPinCard: showPinCard,
-    removeCard: removeCard,
+    show: show,
+    remove: remove,
     pinEnterHandler: pinEnterHandler
   };
 

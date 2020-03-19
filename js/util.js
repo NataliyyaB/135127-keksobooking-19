@@ -3,6 +3,8 @@
 (function () {
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
+  var PIN_POSITION_X = 570;
+  var PIN_POSITION_Y = 375;
   var MAP_MAX_Y = 630;
   var MAP_MIN_Y = 130;
   var MAP_MIN_X = 0;
@@ -25,24 +27,29 @@
   var adFeatures = formsContainer.querySelectorAll('.feature__checkbox');
   var adFeatureLabels = formsContainer.querySelectorAll('.feature');
 
-  var initialMainPinCoordsMap = {
-    x: 570,
-    y: 375
+  var UserEvents = {
+    MOUSE_LEFT_BUTTON: 0,
+    KEYBOARD_ENTER: 'Enter',
+    KEYBOARD_ESCAPE: 'Escape'
   };
 
-  var coordsListMap = {
-    top: MAP_MIN_Y,
-    right: map.offsetWidth,
-    bottom: MAP_MAX_Y,
-    left: MAP_MIN_X
+  var InitialMainPinCoords = {
+    x: PIN_POSITION_X,
+    y: PIN_POSITION_Y
+  };
+
+  var CoordsList = {
+    TOP: MAP_MIN_Y,
+    RIGHT: map.offsetWidth,
+    BOTTOM: MAP_MAX_Y,
+    LEFT: MAP_MIN_X
   };
 
   window.util = {
     PIN_WIDTH: PIN_WIDTH,
     PIN_HEIGHT: PIN_HEIGHT,
-    MAP_MAX_Y: MAP_MAX_Y,
-    MAP_MIN_Y: MAP_MIN_Y,
-    initialMainPinCoordsMap: initialMainPinCoordsMap,
+    UserEvents: UserEvents,
+    InitialMainPinCoords: InitialMainPinCoords,
     mainContainer: mainContainer,
     map: map,
     filterForm: filterForm,
@@ -60,7 +67,7 @@
     adDescription: adDescription,
     adFeatures: adFeatures,
     adFeatureLabels: adFeatureLabels,
-    coordsListMap: coordsListMap
+    CoordsList: CoordsList
   };
 })();
 

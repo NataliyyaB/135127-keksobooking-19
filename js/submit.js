@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var TIMEOUT_IN_MS = 10000;
+  var STATUS_CODE_OK = 200;
   var URL = 'https://js.dump.academy/keksobooking';
 
   window.upload = function (data, onSuccess, onError) {
@@ -8,12 +10,22 @@
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === STATUS_CODE_OK) {
         onSuccess(xhr.response);
       } else {
         onError();
       }
     });
+
+    xhr.addEventListener('error', function () {
+      onError();
+    });
+
+    xhr.addEventListener('timeout', function () {
+      onError();
+    });
+
+    xhr.timeout = TIMEOUT_IN_MS;
 
     xhr.open('POST', URL);
     xhr.send(data);
@@ -40,7 +52,7 @@
   };
 
   var successEscHandler = function (evt) {
-    if (evt.key === 'Escape') {
+    if (evt.key === window.util.UserEvents.KEYBOARD_ESCAPE) {
       deactivateSuccessPopup();
     }
   };
@@ -54,34 +66,8 @@
     document.addEventListener('keydown', successEscHandler);
     document.addEventListener('click', successClickHandler);
 
-    window.pin.relocateMainPin(window.util.initialMainPinCoordsMap);
-    window.pin.getMainPinAddress();
-
-    window.util.map.classList.add('map--faded');
-    window.util.formsContainer.classList.add('ad-form--disabled');
-    window.form.makeFormsDisabled(window.form.formElements);
-    window.form.makeFormsDisabled(window.form.filterElements);
-    window.form.clearForms();
-    window.util.formsResetBtn.removeEventListener('click', window.form.resetBtnHandler);
-    window.util.formsContainer.removeEventListener('change', window.file.photoUploadHandler);
-    window.util.adRoom.removeEventListener('change', window.form.formValidityHandler);
-    window.util.adCapacity.removeEventListener('change', window.form.formValidityHandler);
-    window.form.checkinForm.removeEventListener('change', window.form.checkSelectionHandler);
-    window.form.checkoutForm.removeEventListener('change', window.form.checkSelectionHandler);
-
-    var currentPins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
-    if (currentPins.length > 1) {
-      for (var i = 0; i < currentPins.length; i++) {
-        if (!currentPins[i].classList.contains('map__pin--main')) {
-          currentPins[i].remove();
-        }
-      }
-    }
-
-    var openedCard = window.util.map.querySelector('.map__card');
-    if (openedCard) {
-      openedCard.remove();
-    }
+    window.form.deactivateElements();
+    window.form.clear();
 
     window.util.mainPin.addEventListener('mousedown', window.map.mainPinMouseHandler);
     window.util.mainPin.addEventListener('keydown', window.map.mainPinEnterHandler);
@@ -93,7 +79,7 @@
   };
 
   var errorMessageEscHandler = function (evt) {
-    if (evt.key === 'Escape') {
+    if (evt.key === window.util.UserEvents.KEYBOARD_ESCAPE) {
       deactivateErrorPopup();
     }
   };

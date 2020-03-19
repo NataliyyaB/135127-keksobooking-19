@@ -1,13 +1,13 @@
 'use strict';
 
 (function () {
+  var MAX_PINS_NUMBER = 5;
   var similarListPin = document.querySelector('.map__pins');
   var mainPinImg = window.util.mainPin.querySelector('img');
   var mainPinWidth = mainPinImg.offsetWidth;
   var mainPinHeight = mainPinImg.offsetHeight;
   var mainPinPointer = window.getComputedStyle(window.util.mainPin, ':after').getPropertyValue('border-top-width');
 
-  // define main pin pointer height to use it for calculation Y location of the main pin
   var splitString = function (stringToSplit, separator) {
     var splitResult = stringToSplit.split(separator);
     var result = +splitResult[0];
@@ -30,24 +30,26 @@
     return pinElement;
   };
 
-  var getMainPinAddress = function (isActive) {
-    window.util.addressForm.value = (window.util.initialMainPinCoordsMap.x + mainPinWidth / 2) + ', ' + (window.util.initialMainPinCoordsMap.y + mainPinHeight / 2);
+  var getMainItemAddress = function (isActive) {
+    window.util.addressForm.value = (window.util.InitialMainPinCoords.x + mainPinWidth / 2) + ', ' + (window.util.InitialMainPinCoords.y + mainPinHeight / 2);
 
     if (isActive) {
       window.util.addressForm.value = (window.util.mainPin.offsetLeft + mainPinWidth / 2) + ', ' + (window.util.mainPin.offsetTop + mainPinFullHeight);
     }
   };
 
-  var renderLimitedPins = function (data) {
-    var arrayLength = data.length > 5 ? 5 : data.length;
+  var renderLimitedItems = function (data) {
+    var arrayLength = data.length > MAX_PINS_NUMBER ? MAX_PINS_NUMBER : data.length;
     var fragment = document.createDocumentFragment();
     var currentPins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
+
     if (currentPins.length > 1 || data.length === 0) {
-      for (var i = 0; i < currentPins.length; i++) {
-        if (!currentPins[i].classList.contains('map__pin--main')) {
-          currentPins[i].remove();
+
+      currentPins.forEach(function (currentPin) {
+        if (!currentPin.classList.contains('map__pin--main')) {
+          currentPin.remove();
         }
-      }
+      });
     }
     for (var j = 0; j < arrayLength; j++) {
       var newPin = renderPin(data[j]);
@@ -58,13 +60,13 @@
   };
 
 
-  var relocateMainPin = function (coords) {
+  var relocateMainItem = function (coords) {
     window.util.mainPin.style.top = coords.y + 'px';
     window.util.mainPin.style.left = coords.x + 'px';
   };
 
 
-  var mainPinDraggableHandler = function (evt) {
+  var mainItemDraggableHandler = function (evt) {
     evt.preventDefault();
 
     var startCoords = {
@@ -90,15 +92,15 @@
         y: window.util.mainPin.offsetTop - shift.y
       };
 
-      if (finalCoords.x + mainPinWidth / 2 < window.util.coordsListMap.left || finalCoords.x + mainPinWidth / 2 > window.util.coordsListMap.right) {
+      if (finalCoords.x + mainPinWidth / 2 < window.util.CoordsList.LEFT || finalCoords.x + mainPinWidth / 2 > window.util.CoordsList.RIGHT) {
         finalCoords.x = window.util.mainPin.offsetLeft;
       }
-      if (finalCoords.y + mainPinFullHeight < window.util.coordsListMap.top || finalCoords.y + mainPinFullHeight > window.util.coordsListMap.bottom) {
+      if (finalCoords.y + mainPinFullHeight < window.util.CoordsList.TOP || finalCoords.y + mainPinFullHeight > window.util.CoordsList.BOTTOM) {
         finalCoords.y = window.util.mainPin.offsetTop;
       }
 
-      relocateMainPin(finalCoords);
-      getMainPinAddress(true);
+      relocateMainItem(finalCoords);
+      getMainItemAddress(true);
     };
 
     var mouseUpHandler = function (upEvt) {
@@ -107,21 +109,21 @@
       document.removeEventListener('mousemove', mouseMoveHandler);
       document.removeEventListener('mouseup', mouseUpHandler);
 
-      getMainPinAddress(true);
+      getMainItemAddress(true);
     };
 
     document.addEventListener('mousemove', mouseMoveHandler);
     document.addEventListener('mouseup', mouseUpHandler);
   };
 
-  window.util.mainPin.addEventListener('mousedown', mainPinDraggableHandler);
+  window.util.mainPin.addEventListener('mousedown', mainItemDraggableHandler);
 
 
   window.pin = {
-    renderLimitedPins: renderLimitedPins,
-    getMainPinAddress: getMainPinAddress,
-    mainPinDraggableHandler: mainPinDraggableHandler,
-    relocateMainPin: relocateMainPin
+    renderLimitedItems: renderLimitedItems,
+    getMainItemAddress: getMainItemAddress,
+    mainItemDraggableHandler: mainItemDraggableHandler,
+    relocateMainItem: relocateMainItem
   };
 
 })();
