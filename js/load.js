@@ -1,6 +1,14 @@
 'use strict';
 
 (function () {
+  var Code = {
+    OK: 200,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    NOT_FOUND: 404,
+    SERVER_ERROR: 500
+  };
+
   var TIMEOUT_IN_MS = 10000;
   var URL = 'https://js.dump.academy/keksobooking/data';
   var messageTopPosition = 0;
@@ -19,9 +27,10 @@
   };
 
   var successHandler = function (data) {
-    for (var i = 0; i < data.length; i++) {
-      data[i].uniqueId = i;
-    }
+    data.forEach(function (dataItem, i) {
+      dataItem.uniqueId = i;
+    });
+
     window.pin.renderLimitedItems(data);
     window.loadResult = data;
     var pins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
@@ -36,19 +45,19 @@
 
     xhr.addEventListener('load', function () {
       switch (xhr.status) {
-        case 200:
+        case Code.OK:
           onSuccess(xhr.response);
           break;
-        case 400:
+        case Code.BAD_REQUEST:
           onError('Неверный запрос');
           break;
-        case 401:
+        case Code.UNAUTHORIZED:
           onError('Пользователь не авторизован');
           break;
-        case 404:
+        case Code.NOT_FOUND:
           onError('Ничего не найдено');
           break;
-        case 500:
+        case Code.SERVER_ERROR:
           onError('Внутренняя ошибка сервера');
           break;
 

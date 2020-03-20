@@ -40,6 +40,8 @@
 
   var renderLimitedItems = function (data) {
     var arrayLength = data.length > MAX_PINS_NUMBER ? MAX_PINS_NUMBER : data.length;
+    var currentData = data.slice(0, arrayLength);
+
     var fragment = document.createDocumentFragment();
     var currentPins = window.util.mapPinsContainer.querySelectorAll('.map__pin');
 
@@ -51,11 +53,15 @@
         }
       });
     }
-    for (var j = 0; j < arrayLength; j++) {
-      var newPin = renderPin(data[j]);
-      newPin.id = data[j].uniqueId;
+
+    currentData.forEach(function (dataItem) {
+      if (!dataItem.offer) {
+        return;
+      }
+      var newPin = renderPin(dataItem);
+      newPin.id = dataItem.uniqueId;
       fragment.appendChild(newPin);
-    }
+    });
     similarListPin.appendChild(fragment);
   };
 

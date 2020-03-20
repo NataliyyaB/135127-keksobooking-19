@@ -75,7 +75,14 @@
     };
 
     var samePins = window.loadResult.filter(function (it) {
-      return checkType(it.offer.type) && checkPrice(it.offer.price) && checkRooms(it.offer.rooms.toString()) && checkCapacity(it.offer.guests.toString()) && checkFeatures(it.offer.features);
+      if (!it.offer) {
+        return false;
+      }
+      return checkType(it.offer.type) &&
+        checkPrice(it.offer.price) &&
+        checkRooms(it.offer.rooms.toString()) &&
+        checkCapacity(it.offer.guests.toString()) &&
+        checkFeatures(it.offer.features);
     });
 
 

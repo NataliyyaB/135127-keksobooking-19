@@ -95,10 +95,8 @@
     if (card) {
       card.remove();
       card = null;
-      card = addCardsToDom(window.loadResult[targetId]);
-    } else {
-      card = addCardsToDom(window.loadResult[targetId]);
     }
+    card = addCardsToDom(window.loadResult[targetId]);
   };
 
   var pinClickHandler = function (evt) {

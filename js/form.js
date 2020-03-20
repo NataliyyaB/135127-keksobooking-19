@@ -10,6 +10,7 @@
   var MIN_PRICE_BUNGALO = 0;
   var MIN_PRICE_HOUSE = 5000;
   var MIN_PRICE_PALACE = 10000;
+  var ROOMS_BIG_NUMBER = '100';
 
   var elements = window.util.formsContainer.querySelectorAll('.ad-form__element');
   var filterContainer = document.querySelector('.map__filters');
@@ -43,7 +44,6 @@
       FOR_THREE: '3',
       NOT_FOR_GUESTS: '0'
     };
-    var ROOMS_BIG_NUMBER = '100';
 
     if (roomsOption === RoomsCapacity.FOR_ONE && !(capacityOption === RoomsCapacity.FOR_ONE)) {
       window.util.adCapacity.setCustomValidity('Для 1 комнаты выберите не более 1 гостя');
